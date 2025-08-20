@@ -32,8 +32,16 @@ export default function MermaidChat() {
       } else {
         setError(data.error || "生成失败");
       }
-    } catch (e: any) {
-      setError(e.message || "请求出错");
+    } catch (e: unknown) {
+      let errorMsg = '';
+      if (e instanceof Error) {
+        errorMsg = e.message;
+      } else if (typeof e === 'string') {
+        errorMsg = e;
+      } else {
+        errorMsg = JSON.stringify(e);
+      }
+      setError(errorMsg || "请求出错");
     } finally {
       setLoading(false);
     }

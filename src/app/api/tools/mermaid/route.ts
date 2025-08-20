@@ -51,8 +51,16 @@ export async function POST(req: NextRequest) {
       };
       return NextResponse.json(result);
     }
-  } catch (e: any) {
-    return NextResponse.json({ success: false, error: `处理过程中出错: ${e.message || e}`, graph: '' }, { status: 500 });
+  } catch (e: unknown) {
+    let errorMsg = '';
+    if (e instanceof Error) {
+      errorMsg = e.message;
+    } else if (typeof e === 'string') {
+      errorMsg = e;
+    } else {
+      errorMsg = JSON.stringify(e);
+    }
+    return NextResponse.json({ success: false, error: `处理过程中出错: ${errorMsg}`, graph: '' }, { status: 500 });
   }
 }
 
